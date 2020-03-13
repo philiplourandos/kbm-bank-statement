@@ -44,12 +44,13 @@ func main() {
 		var currentOwner Owner
 
 		for i := 1; i < entries ; i++ {
-			currentOwner.paymentIds = append(currentOwner.paymentIds, strings.TrimSpace(line[i]))
+			if (line[i] != "") {
+				currentOwner.paymentIds = append(currentOwner.paymentIds, strings.TrimSpace(line[i]))
+			}
 		}
 		currentOwner.apartment = line[0]
 
 		owners = append(owners, currentOwner)
-		fmt.Printf("%s\n", currentOwner)
 	}
 
 	f, err := os.Open(src)
@@ -83,5 +84,9 @@ func main() {
 				}
 			}
 		}
+	}
+
+	for _, currentStatement := range statementLines {
+		fmt.Printf("Apartment: [%s], date: [%s], amount: [%s], line: [%s]", currentStatement.apartment, currentStatement.date, currentStatement.amount, currentStatement.statementLine)
 	}
 }
