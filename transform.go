@@ -79,12 +79,16 @@ func main() {
 
 	f.Close()
 
-	for _, currentStatement := range statementLines {
+	for statementIndex := 0; statementIndex < len(statementLines); statementIndex++ {
+		currentStatement := &statementLines[statementIndex]
+
 		for _, currentOwner := range owners {
 			for _, currentId := range currentOwner.paymentIds {
 
 				if strings.Contains(currentStatement.statementLine, currentId) {
 					currentStatement.apartment = currentOwner.apartment
+
+					fmt.Println("ID: %s", currentStatement.apartment)
 				}
 			}
 		}
@@ -96,8 +100,11 @@ func main() {
 	spreadsheet.WriteString("Date,Apartment,Amount\n")
 
 	for _, currentStatement := range statementLines {
-		line := fmt.Sprintf("%s,%s,%s\n", currentStatement.date, currentStatement.apartment, currentStatement.amount)
-		spreadsheet.WriteString(line)
+		if (currentStatement.apartment != "") {
+			line := fmt.Sprintf("%s,%s,%s\n", currentStatement.date, currentStatement.apartment, currentStatement.amount)
+			spreadsheet.WriteString(line)
+		
+		}
 	}
 
 	spreadsheet.Close()
