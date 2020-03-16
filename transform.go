@@ -65,7 +65,13 @@ func main() {
 
 	var statementLines []Entry
 
-	lines, _ := csv.NewReader(f).ReadAll()
+	lines, csvErr := csv.NewReader(f).ReadAll()
+
+	if csvErr != nil {
+		fmt.Print(csvErr)
+
+		os.Exit(1)
+	}
 
 	for _, line := range lines {
 		var entry Entry
