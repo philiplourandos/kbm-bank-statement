@@ -25,7 +25,7 @@ func main() {
 
 	fmt.Printf("File to process: [%s]\n", src)
 
-	onwerFile, err := os.Open("apartment.csv")
+	ownerFile, err := os.Open("apartment.csv")
 	if err != nil {
 		fmt.Printf("Unable to open apartments.csv")
 
@@ -33,7 +33,7 @@ func main() {
 	}
 
 	var owners []Owner
-	apartment, err := csv.NewReader(onwerFile).ReadAll()
+	apartment, err := csv.NewReader(ownerFile).ReadAll()
 	if err != nil {
 		fmt.Printf("err i: %s", err)
 	}
@@ -52,6 +52,8 @@ func main() {
 
 		owners = append(owners, currentOwner)
 	}
+
+	ownerFile.Close()
 
 	f, err := os.Open(src)
 
@@ -75,6 +77,8 @@ func main() {
 		statementLines = append(statementLines, entry)
 	}
 
+	f.Close()
+
 	for _, currentStatement := range statementLines {
 		for _, currentOwner := range owners {
 			for _, currentId := range currentOwner.paymentIds {
@@ -86,7 +90,15 @@ func main() {
 		}
 	}
 
+	fmt.Println("Writing file")
+
+	spreadsheet, _ := os.Create("kbm-payments.csv")
+	spreadsheet.WriteString("Date,Apartment,Amount\n")
+
 	for _, currentStatement := range statementLines {
-		fmt.Printf("Apartment: [%s], date: [%s], amount: [%s], line: [%s]", currentStatement.apartment, currentStatement.date, currentStatement.amount, currentStatement.statementLine)
+		line := fmt.Sprintf("%s,%s,%s\n", currentStatement.date, currentStatement.apartment, currentStatement.amount)
+		spreadsheet.WriteString(line)
 	}
+
+	spreadsheet.Close()
 }
