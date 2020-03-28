@@ -4,6 +4,7 @@ import (
 	"encoding/csv"
 	"fmt"
 	"os"
+	"regexp"
 	"strings"
 	"time"
 )
@@ -68,6 +69,8 @@ func main() {
 
 	lines, _ := csv.NewReader(f).ReadAll()
 
+	rx, _ := regexp.Compile("^*?([1-9][0-9]*?\\.[0-9]{2})")
+
 	for _, line := range lines {
 		var entry Entry
 
@@ -77,13 +80,15 @@ func main() {
 		if dateErr != nil {
 			fmt.Println(dateErr)
 			os.Exit(1)
-		} else {
-			fmt.Println(date)
 		}
 
 		entry.date = date
 		entry.statementType = line[2]
-		entry.amount = line[3][1:len(line[3])]
+
+		amount := string(line[3][1:])
+		vals := rx.FindAllStringSubmatch(amount, 1)
+		entry.amount = vals[0][1]
+
 		entry.statementLine = line[4]
 
 		statementLines = append(statementLines, entry)
@@ -110,7 +115,8 @@ func main() {
 
 	for _, currentStatement := range statementLines {
 		if currentStatement.apartment != "" {
-			line := fmt.Sprintf("%s,%s,%s\n", currentStatement.date, currentStatement.apartment, currentStatement.amount)
+			line := fmt.Sprintf("%s,%s,%s\n", currentStatement.date.Format("2006-01-02"),
+				currentStatement.apartment, currentStatement.amount)
 			spreadsheet.WriteString(line)
 
 		}
@@ -118,11 +124,7 @@ func main() {
 
 	spreadsheet.Close()
 
-	var identified []Entry
+	for _, currentOwner := range owners {
 
-	for _, currentStatement := range statementLines {
-		if currentStatement.apartment != "" {
-			identified = append(identified, currentStatement)
-		}
 	}
 }
