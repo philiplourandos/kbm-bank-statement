@@ -4,19 +4,21 @@ import (
 	"encoding/csv"
 	"fmt"
 	"os"
+	"regexp"
 	"strings"
+	"time"
 )
 
 type Entry struct {
-	date string
+	date          time.Time
 	statementType string
-	amount string
+	amount        string
 	statementLine string
-	apartment string
+	apartment     string
 }
 
 type Owner struct {
-	apartment string
+	apartment  string
 	paymentIds []string
 }
 
@@ -43,8 +45,8 @@ func main() {
 
 		var currentOwner Owner
 
-		for i := 1; i < entries ; i++ {
-			if (line[i] != "") {
+		for i := 1; i < entries; i++ {
+			if line[i] != "" {
 				currentOwner.paymentIds = append(currentOwner.paymentIds, strings.TrimSpace(line[i]))
 			}
 		}
@@ -73,11 +75,26 @@ func main() {
 		os.Exit(1)
 	}
 
+	rx, _ := regexp.Compile("^*?([1-9][0-9]*?\\.[0-9]{2})")
+
 	for _, line := range lines {
 		var entry Entry
-		entry.date = line[1]
+
+		trimmedDate := []rune(line[1])[1:]
+
+		date, dateErr := time.Parse("20060102", string(trimmedDate))
+		if dateErr != nil {
+			fmt.Println(dateErr)
+			os.Exit(1)
+		}
+
+		entry.date = date
 		entry.statementType = line[2]
-		entry.amount = line[3][1:len(line[3])]
+
+		amount := string(line[3][1:])
+		vals := rx.FindAllStringSubmatch(amount, 1)
+		entry.amount = vals[0][1]
+
 		entry.statementLine = line[4]
 
 		statementLines = append(statementLines, entry)
@@ -90,11 +107,8 @@ func main() {
 
 		for _, currentOwner := range owners {
 			for _, currentId := range currentOwner.paymentIds {
-
 				if strings.Contains(currentStatement.statementLine, currentId) {
 					currentStatement.apartment = currentOwner.apartment
-
-					fmt.Println("ID: %s", currentStatement.apartment)
 				}
 			}
 		}
@@ -106,12 +120,17 @@ func main() {
 	spreadsheet.WriteString("Date,Apartment,Amount\n")
 
 	for _, currentStatement := range statementLines {
-		if (currentStatement.apartment != "") {
-			line := fmt.Sprintf("%s,%s,%s\n", currentStatement.date, currentStatement.apartment, currentStatement.amount)
+		if currentStatement.apartment != "" {
+			line := fmt.Sprintf("%s,%s,%s\n", currentStatement.date.Format("2006-01-02"),
+				currentStatement.apartment, currentStatement.amount)
 			spreadsheet.WriteString(line)
-		
+
 		}
 	}
 
 	spreadsheet.Close()
+
+	for _, currentOwner := range owners {
+
+	}
 }
