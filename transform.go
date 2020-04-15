@@ -114,7 +114,7 @@ func main() {
 		}
 	}
 
-	fmt.Println("Writing file")
+	fmt.Println("Writing owner payments to file")
 
 	spreadsheet, _ := os.Create("kbm-payments.csv")
 	spreadsheet.WriteString("Date,Apartment,Amount\n")
@@ -130,7 +130,23 @@ func main() {
 
 	spreadsheet.Close()
 
-	for _, currentOwner := range owners {
+	// Find outstanding owners who have not paid in the last 40 days
+	fmt.Println("finding late payment")
+	var latePaymentThreshold = time.Now().AddDate(0, 0, -40)
+	var lastPayments []Entry
 
+	for _, currentOwner := range owners {
+		var found Entry
+
+		for _, currentStatement := range statementLines {
+			if currentStatement.apartment != "" && currentOwner.apartment == currentStatement.apartment {
+				found = currentStatement
+			}
+		}
+
+		if found.date.Before(latePaymentThreshold) {
+			lastPayments = append(lastPayments, found)
+			fmt.Printf("Apartment: %s, last paid on: %s\n", found.apartment, found.date)
+		}
 	}
 }
