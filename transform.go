@@ -20,8 +20,8 @@ type Entry struct {
 	apartment     string
 }
 
-type Owners struct {
-	Owner []struct {
+type Owners []struct {
+	Owner struct {
 		Apartment  string `yaml:"apartment"`
 		PaymentIds []string `yaml:"paymentIds"`
 	} `yaml:"owner"`
@@ -89,10 +89,10 @@ func main() {
 	for statementIndex := 0; statementIndex < len(statementLines); statementIndex++ {
 		currentStatement := &statementLines[statementIndex]
 
-		for _, currentOwner := range owners.Owner {
-			for _, currentId := range currentOwner.PaymentIds {
+		for _, currentOwner := range owners {
+			for _, currentId := range currentOwner.Owner.PaymentIds {
 				if strings.Contains(currentStatement.statementLine, currentId) {
-					currentStatement.apartment = currentOwner.Apartment
+					currentStatement.apartment = currentOwner.Owner.Apartment
 				}
 			}
 		}
@@ -119,11 +119,11 @@ func main() {
 	var latePaymentThreshold = time.Now().AddDate(0, 0, -40)
 	var lastPayments []Entry
 
-	for _, currentOwner := range owners.Owner {
+	for _, currentOwner := range owners {
 		var found Entry
 
 		for _, currentStatement := range statementLines {
-			if currentStatement.apartment != "" && currentOwner.Apartment == currentStatement.apartment {
+			if currentStatement.apartment != "" && currentOwner.Owner.Apartment == currentStatement.apartment {
 				found = currentStatement
 			}
 		}
