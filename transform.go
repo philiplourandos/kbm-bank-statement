@@ -3,10 +3,13 @@ package main
 import (
 	"encoding/csv"
 	"fmt"
+	"io/ioutil"
 	"os"
 	"regexp"
 	"strings"
 	"time"
+
+	"gopkg.in/yaml.v2"
 )
 
 type Entry struct {
@@ -17,45 +20,26 @@ type Entry struct {
 	apartment     string
 }
 
-type Owner struct {
-	apartment  string
-	paymentIds []string
+type Owners struct {
+	Owner []struct {
+		Apartment  string `yaml:"apartment"`
+		PaymentIds []string `yaml:"paymentIds"`
+	} `yaml:"owner"`
 }
 
 func main() {
+	// Load apartment owner metadata
+	content, _ := ioutil.ReadFile("apartments.yml")
+
+	owners := Owners{}
+	err := yaml.Unmarshal(content, &owners)
+	if err != nil {
+		fmt.Printf("%s\n", err)
+	}
+
+	// Load bank statement data
 	var src = "data.csv"
-
 	fmt.Printf("File to process: [%s]\n", src)
-
-	ownerFile, err := os.Open("apartment.csv")
-	if err != nil {
-		fmt.Printf("Unable to open apartments.csv")
-
-		os.Exit(1)
-	}
-
-	var owners []Owner
-	apartment, err := csv.NewReader(ownerFile).ReadAll()
-	if err != nil {
-		fmt.Printf("err i: %s", err)
-	}
-
-	for _, line := range apartment {
-		entries := len(line)
-
-		var currentOwner Owner
-
-		for i := 1; i < entries; i++ {
-			if line[i] != "" {
-				currentOwner.paymentIds = append(currentOwner.paymentIds, strings.TrimSpace(line[i]))
-			}
-		}
-		currentOwner.apartment = line[0]
-
-		owners = append(owners, currentOwner)
-	}
-
-	ownerFile.Close()
 
 	f, err := os.Open(src)
 
@@ -105,10 +89,10 @@ func main() {
 	for statementIndex := 0; statementIndex < len(statementLines); statementIndex++ {
 		currentStatement := &statementLines[statementIndex]
 
-		for _, currentOwner := range owners {
-			for _, currentId := range currentOwner.paymentIds {
+		for _, currentOwner := range owners.Owner {
+			for _, currentId := range currentOwner.PaymentIds {
 				if strings.Contains(currentStatement.statementLine, currentId) {
-					currentStatement.apartment = currentOwner.apartment
+					currentStatement.apartment = currentOwner.Apartment
 				}
 			}
 		}
@@ -135,11 +119,11 @@ func main() {
 	var latePaymentThreshold = time.Now().AddDate(0, 0, -40)
 	var lastPayments []Entry
 
-	for _, currentOwner := range owners {
+	for _, currentOwner := range owners.Owner {
 		var found Entry
 
 		for _, currentStatement := range statementLines {
-			if currentStatement.apartment != "" && currentOwner.apartment == currentStatement.apartment {
+			if currentStatement.apartment != "" && currentOwner.Apartment == currentStatement.apartment {
 				found = currentStatement
 			}
 		}
