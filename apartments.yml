@@ -1,0 +1,158 @@
+---
+- owner:
+    apartment: "002"
+    paymentIds:
+      - "KB002"
+- owner:
+    apartment: "003"
+    paymentIds:
+      - "KB003"
+- owner:
+    apartment: "004"
+    paymentIds:
+      - "KB004"
+- owner:
+    apartment: "005"
+    paymentIds:
+      - "KB005"
+- owner:
+    apartment: "101"
+    paymentIds:
+      - "KB101"
+- owner:
+    apartment: "102"
+    paymentIds:
+      - "KB102"
+- owner:
+    apartment: "103"
+    paymentIds:
+      - "KB103"
+      - "OLITZKI BRIAN"
+- owner:
+    apartment: "104"
+    paymentIds:
+      - "KB104"
+- owner:
+    apartment: "105"
+    paymentIds:
+      - "KB105"
+      - "GEORGIA FRANCE"
+- owner:
+    apartment: "106"
+    paymentIds:
+      - "KB106"
+- owner:
+    apartment: "201"
+    paymentIds:
+      - "KB201"
+      - "PAIZES"
+- owner:
+    apartment: "202"
+    paymentIds:
+      - "KB202"
+- owner:
+    apartment: "203"
+    paymentIds:
+      - "KB203"
+- owner:
+    apartment: "204"
+    paymentIds:
+      - "KB204"
+- owner:
+    apartment: "205"
+    paymentIds:
+      - "KB205"
+      - "205_LEVIES_A.BARONI"
+- owner:
+    apartment: "206"
+    paymentIds:
+      - "KB206"
+- owner:
+    apartment: "301"
+    paymentIds:
+      - "KB301"
+- owner:
+    apartment: "302"
+    paymentIds:
+      - "KB302"
+- owner:
+    apartment: "303"
+    paymentIds:
+      - "KB303"
+      - "KB 303"
+- owner:
+    apartment: "304"
+    paymentIds:
+      - "KB304"
+      - "112304-KB304"
+- owner:
+    apartment: "305"
+    paymentIds:
+      - "KB305"
+      - "305 KNIGHTSBRIDGE"
+      - "KB305 LEVEY BALANCE"
+      - "KB305 SPECI LEVEY"
+- owner:
+    apartment: "306"
+    paymentIds:
+      - "KB306"
+      - "kb 306"
+      - "ABSA BANK KB 306"
+- owner:
+    apartment: "401"
+    paymentIds:
+      - "KB401"
+- owner:
+    apartment: "402"
+    paymentIds:
+      - "KB402"
+      - "INVESTECPBKB402"
+      - "KB 402"
+- owner:
+    apartment: "403"
+    paymentIds:
+      - "KB403"
+- owner:
+    apartment: "404"
+    paymentIds:
+      - "KB404"
+- owner:
+    apartment: "405"
+    paymentIds:
+      - "KB405"
+- owner:
+    apartment: "406"
+    paymentIds:
+      - "KB406"
+      - "KB 406"
+- owner:
+    apartment: "501"
+    paymentIds:
+      - "KB501"
+      - "501"
+- owner:
+    apartment: "502"
+    paymentIds:
+      - "KB502"
+- owner:
+    apartment: "503"
+    paymentIds:
+      - "KB503"
+- owner:
+    apartment: "504"
+    paymentIds:
+      - "KB504"
+- owner:
+    apartment: "505"
+    paymentIds:
+      - "KB505"
+- owner:
+    apartment: "506"
+    paymentIds:
+      - "KB506"
+- owner:
+    apartment: "Renter"
+    paymentIds:
+      - "RENTER"
+      - "RENT01"
+      - "RENT02"
